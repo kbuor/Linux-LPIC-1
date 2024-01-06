@@ -534,6 +534,9 @@ tmpfs                      tmpfs     365M     0  365M   0% /run/user/0
 
 ## II. EXPAND `EXISTING MOUNT POINT` BY `EXPAND EXISTING LOGICAL VOLUME` BY `EXPAND EXISTING VOLUME GROUP` FROM `NEW PHYSICAL VOLUME` FROM `NEW PARTITION` FROM `NEW PHYSICAL DISK`
 
+![image](https://github.com/kbuor/Linux-LPIC-1/assets/77895173/926ec783-b560-4c6e-8dbb-57e7f523b326)
+
+
 ### 1. Check `root` mount point to expand
 ```console
 df -hT
