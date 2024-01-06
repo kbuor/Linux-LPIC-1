@@ -1,6 +1,9 @@
 # LINUX LVM MANAGEMENT
 ## I. CREATE `NEW MOUNT POINT` FROM `NEW LOGICAL VOLUME` FROM `NEW VOLUME GROUP` FROM `NEW PHYSICAL VOLUME` FROM `NEW PARTITION` FROM `NEW PHYSICAL DISK`
 
+![image](https://github.com/kbuor/Linux-LPIC-1/assets/77895173/4e7f3357-392b-46d1-bd5c-cfcd50d5129d)
+
+
 ### 1. Check current physical disk:
 
 ```console
