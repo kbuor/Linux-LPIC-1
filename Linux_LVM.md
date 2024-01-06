@@ -4,6 +4,8 @@
 ![image](https://github.com/kbuor/Linux-LPIC-1/assets/77895173/4e7f3357-392b-46d1-bd5c-cfcd50d5129d)
 
 
+> Images are for structural illustration purposes only
+
 ### 1. Check current physical disk:
 
 ```console
@@ -539,6 +541,8 @@ tmpfs                      tmpfs     365M     0  365M   0% /run/user/0
 
 ![image](https://github.com/kbuor/Linux-LPIC-1/assets/77895173/926ec783-b560-4c6e-8dbb-57e7f523b326)
 
+
+> Images are for structural illustration purposes only
 
 ### 1. Check `root` mount point to expand
 ```console
