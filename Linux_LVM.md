@@ -46,7 +46,7 @@ sda           8:0    0   50G  0 disk
   └─rl-swap 253:1    0  3.9G  0 lvm  [SWAP]
 sr0          11:0    1 1024M  0 rom
 ```
-2. Add new /dev/sdb hard disk
+### 2. Add new `/dev/sdb` hard disk
 ```console
 fdisk -l
 ```
@@ -97,7 +97,7 @@ sda           8:0    0   50G  0 disk
 sdb           8:16   0   20G  0 disk 
 sr0          11:0    1 1024M  0 rom
 ```
-3. Create new LVM partition
+### 3. Create new LVM partition
 ```console
 fdisk /dev/sdb
 ```
@@ -186,7 +186,7 @@ sdb           8:16   0   20G  0 disk
 └─sdb1        8:17   0   20G  0 part 
 sr0          11:0    1 1024M  0 rom
 ```
-4. Create new *physical volume*
+### 4. Create new `physical volume`
 ```console
 pvdisplay
 ```
@@ -251,7 +251,7 @@ pvs
   /dev/sdb1     lvm2 ---  <20.00g <20.00g
 ```
 
-5. Create new *volume group*
+### 5. Create new `volume group`
 ```console
 vgdisplay
 ```
@@ -345,7 +345,7 @@ vgs
   rl      1   2   0 wz--n-  48.41g      0
 ```
 
-6. Create new *Logical Volume*
+### 6. Create new `Logical Volume`
 ```console
 lvdisplay
 ```
@@ -463,7 +463,7 @@ lvs
   swap     rl    -wi-ao----  <3.94g
 ```
 
-7. Format New Logical Volume
+### 7. Format New Logical Volume
 ```console
 mkfs -t ext4 /dev/kbuor/lv_kbuor
 ```
@@ -483,7 +483,7 @@ Writing superblocks and filesystem accounting information: done
 ```
 > For xfs filesystem, use: `mkfs -t xfs /dev/kbuor/lv_kbuor`
 
-8. Mount New Logical Volume to use
+### 8. Mount New Logical Volume to use
 ```console
 mkdir -p /kbuor
 ```
