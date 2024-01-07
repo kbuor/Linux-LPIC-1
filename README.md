@@ -1115,3 +1115,592 @@ tmpfs                      tmpfs     730M  8.6M  721M   2% /run
 tmpfs                      tmpfs     365M     0  365M   0% /run/user/0
 /dev/mapper/kbuor-lv_kbuor ext4       20G   24K   19G   1% /kbuor
 ```
+## III. EXPAND `EXISTING MOUNT POINT` BY `EXPAND EXISTING LOGICAL VOLUME` BY `EXPAND EXISTING VOLUME GROUP` BY `EXPAND EXISTING PHYSICAL VOLUME` BY `EXPAND EXISTING PARTITION` BY `EXPAND EXISTING PHYSICAL DISK`
+### 1. Check `root` mount point to expand
+```console
+df -hT
+```
+```shell
+Filesystem                 Type      Size  Used Avail Use% Mounted on
+devtmpfs                   devtmpfs  4.0M     0  4.0M   0% /dev
+tmpfs                      tmpfs     1.8G     0  1.8G   0% /dev/shm
+tmpfs                      tmpfs     730M  8.6M  721M   2% /run
+/dev/mapper/rl-root        xfs        85G  2.6G   82G   4% /
+/dev/sda2                  xfs       960M  269M  692M  28% /boot
+/dev/sda1                  vfat      599M  7.0M  592M   2% /boot/efi
+/dev/mapper/kbuor-lv_kbuor ext4       20G   24K   19G   1% /kbuor
+tmpfs                      tmpfs     365M     0  365M   0% /run/user/0
+```
+### 2. Check physical disk
+```console
+fdisk -l
+```
+```shell
+Disk /dev/sda: 50 GiB, 53687091200 bytes, 104857600 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: AD4DACFB-2E03-4B35-8AF7-1A5A27DCB856
+
+Device       Start       End   Sectors  Size Type
+/dev/sda1     2048   1230847   1228800  600M EFI System
+/dev/sda2  1230848   3327999   2097152    1G Linux filesystem
+/dev/sda3  3328000 104855551 101527552 48.4G Linux LVM
+
+
+Disk /dev/mapper/rl-root: 84.47 GiB, 90697629696 bytes, 177143808 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/rl-swap: 3.94 GiB, 4227858432 bytes, 8257536 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdb: 20 GiB, 21474836480 bytes, 41943040 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x6b42e800
+
+Device     Boot Start      End  Sectors Size Id Type
+/dev/sdb1        2048 41943039 41940992  20G 8e Linux LVM
+
+
+Disk /dev/mapper/kbuor-lv_kbuor: 20 GiB, 21470642176 bytes, 41934848 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdc: 40 GiB, 42949672960 bytes, 83886080 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x3180fc0c
+
+Device     Boot Start      End  Sectors Size Id Type
+/dev/sdc1        2048 83886079 83884032  40G 8e Linux LVM
+```
+### 3. Add more space for `/dev/sda`
+![image](https://github.com/kbuor/Linux-LPIC-1/assets/77895173/21192d04-1b08-4b20-a4fe-226f2d12b6a3)
+![image](https://github.com/kbuor/Linux-LPIC-1/assets/77895173/662b6141-959b-41b4-b159-8dd90cc6329f)
+
+```console
+echo 1>/sys/class/block/sda/device/rescan
+```
+```console
+fdisk -l
+```
+```shell
+GPT PMBR size mismatch (104857599 != 167772159) will be corrected by write.
+The backup GPT table is not on the end of the device.
+Disk /dev/sda: 80 GiB, 85899345920 bytes, 167772160 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: AD4DACFB-2E03-4B35-8AF7-1A5A27DCB856
+
+Device       Start       End   Sectors  Size Type
+/dev/sda1     2048   1230847   1228800  600M EFI System
+/dev/sda2  1230848   3327999   2097152    1G Linux filesystem
+/dev/sda3  3328000 104855551 101527552 48.4G Linux LVM
+
+
+Disk /dev/mapper/rl-root: 84.47 GiB, 90697629696 bytes, 177143808 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/rl-swap: 3.94 GiB, 4227858432 bytes, 8257536 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdb: 20 GiB, 21474836480 bytes, 41943040 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x6b42e800
+
+Device     Boot Start      End  Sectors Size Id Type
+/dev/sdb1        2048 41943039 41940992  20G 8e Linux LVM
+
+
+Disk /dev/mapper/kbuor-lv_kbuor: 20 GiB, 21470642176 bytes, 41934848 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/sdc: 40 GiB, 42949672960 bytes, 83886080 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x3180fc0c
+
+Device     Boot Start      End  Sectors Size Id Type
+/dev/sdc1        2048 83886079 83884032  40G 8e Linux LVM
+```
+### 4. Expand partition `/dev/sda3`
+```console
+fdisk /dev/sda
+```
+```shell
+
+Welcome to fdisk (util-linux 2.37.4).
+Changes will remain in memory only, until you decide to write them.
+Be careful before using the write command.
+
+GPT PMBR size mismatch (104857599 != 167772159) will be corrected by write.
+The backup GPT table is not on the end of the device. This problem will be corrected by write.
+This disk is currently in use - repartitioning is probably a bad idea.
+It's recommended to umount all file systems, and swapoff all swap
+partitions on this disk.
+
+
+Command (m for help): d
+Partition number (1-3, default 3): 3
+
+Partition 3 has been deleted.
+
+Command (m for help): n
+Partition number (3-128, default 3): 3
+First sector (3328000-167772126, default 3328000): 
+Last sector, +/-sectors or +/-size{K,M,G,T,P} (3328000-167772126, default 167772126): 
+
+Created a new partition 3 of type 'Linux filesystem' and of size 78.4 GiB.
+Partition #3 contains a LVM2_member signature.
+
+Do you want to remove the signature? [Y]es/[N]o: n
+
+Command (m for help): t
+Partition number (1-3, default 3): 3
+Partition type or alias (type L to list all): 8e
+
+Type of partition 3 is unchanged: Linux filesystem.
+
+Command (m for help): w
+The partition table has been altered.
+Syncing disks.
+```
+```console
+fdisk -l
+```
+```shell
+Disk /dev/sda: 80 GiB, 85899345920 bytes, 167772160 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: AD4DACFB-2E03-4B35-8AF7-1A5A27DCB856
+
+Device       Start       End   Sectors  Size Type
+/dev/sda1     2048   1230847   1228800  600M EFI System
+/dev/sda2  1230848   3327999   2097152    1G Linux filesystem
+/dev/sda3  3328000 167772126 164444127 78.4G Linux filesystem
+
+
+Disk /dev/sdb: 20 GiB, 21474836480 bytes, 41943040 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x6b42e800
+
+Device     Boot Start      End  Sectors Size Id Type
+/dev/sdb1        2048 41943039 41940992  20G 8e Linux LVM
+
+
+Disk /dev/sdc: 40 GiB, 42949672960 bytes, 83886080 sectors
+Disk model: Virtual disk    
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: dos
+Disk identifier: 0x3180fc0c
+
+Device     Boot Start      End  Sectors Size Id Type
+/dev/sdc1        2048 83886079 83884032  40G 8e Linux LVM
+
+
+Disk /dev/mapper/rl-root: 84.47 GiB, 90697629696 bytes, 177143808 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/rl-swap: 3.94 GiB, 4227858432 bytes, 8257536 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+
+Disk /dev/mapper/kbuor-lv_kbuor: 20 GiB, 21470642176 bytes, 41934848 sectors
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+```
+```console
+lsblk
+```
+```shell
+NAME               MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS
+sda                  8:0    0   80G  0 disk 
+├─sda1               8:1    0  600M  0 part /boot/efi
+├─sda2               8:2    0    1G  0 part /boot
+└─sda3               8:3    0 78.4G  0 part 
+  ├─rl-root        253:0    0 84.5G  0 lvm  /
+  └─rl-swap        253:1    0  3.9G  0 lvm  [SWAP]
+sdb                  8:16   0   20G  0 disk 
+└─sdb1               8:17   0   20G  0 part 
+  └─kbuor-lv_kbuor 253:2    0   20G  0 lvm  /kbuor
+sdc                  8:32   0   40G  0 disk 
+└─sdc1               8:33   0   40G  0 part 
+  └─rl-root        253:0    0 84.5G  0 lvm  /
+sr0                 11:0    1 1024M  0 rom
+```
+### 5. Extend Physical Volume
+```console
+pvdisplay
+```
+```shell
+  --- Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name               kbuor
+  PV Size               <20.00 GiB / not usable 3.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              5119
+  Free PE               0
+  Allocated PE          5119
+  PV UUID               kltrUf-uG2l-1jzg-jmEa-Bz67-4e7h-xXNE0q
+   
+  --- Physical volume ---
+  PV Name               /dev/sda3
+  VG Name               rl
+  PV Size               48.41 GiB / not usable 2.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              12393
+  Free PE               0
+  Allocated PE          12393
+  PV UUID               FeJgxJ-UAcw-qHch-lVUA-miKt-pUNx-OOIXvi
+   
+  --- Physical volume ---
+  PV Name               /dev/sdc1
+  VG Name               rl
+  PV Size               <40.00 GiB / not usable 3.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              10239
+  Free PE               0
+  Allocated PE          10239
+  PV UUID               vdKvhQ-x2kd-leNF-Isev-Xwmc-a7bf-461O3Q
+```
+```console
+pvs
+```
+```shell
+  PV         VG    Fmt  Attr PSize   PFree
+  /dev/sda3  rl    lvm2 a--   48.41g    0 
+  /dev/sdb1  kbuor lvm2 a--  <20.00g    0 
+  /dev/sdc1  rl    lvm2 a--  <40.00g    0
+```
+```console
+pvresize /dev/sda3
+```
+```shell
+  Physical volume "/dev/sda3" changed
+  1 physical volume(s) resized or updated / 0 physical volume(s) not resized
+```
+```console
+pvdisplay
+```
+```shell
+  --- Physical volume ---
+  PV Name               /dev/sdb1
+  VG Name               kbuor
+  PV Size               <20.00 GiB / not usable 3.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              5119
+  Free PE               0
+  Allocated PE          5119
+  PV UUID               kltrUf-uG2l-1jzg-jmEa-Bz67-4e7h-xXNE0q
+   
+  --- Physical volume ---
+  PV Name               /dev/sda3
+  VG Name               rl
+  PV Size               78.41 GiB / not usable 1.98 MiB
+  Allocatable           yes 
+  PE Size               4.00 MiB
+  Total PE              20073
+  Free PE               7680
+  Allocated PE          12393
+  PV UUID               FeJgxJ-UAcw-qHch-lVUA-miKt-pUNx-OOIXvi
+   
+  --- Physical volume ---
+  PV Name               /dev/sdc1
+  VG Name               rl
+  PV Size               <40.00 GiB / not usable 3.00 MiB
+  Allocatable           yes (but full)
+  PE Size               4.00 MiB
+  Total PE              10239
+  Free PE               0
+  Allocated PE          10239
+  PV UUID               vdKvhQ-x2kd-leNF-Isev-Xwmc-a7bf-461O3Q
+```
+```console
+pvs
+```
+```shell
+  PV         VG    Fmt  Attr PSize   PFree 
+  /dev/sda3  rl    lvm2 a--   78.41g 30.00g
+  /dev/sdb1  kbuor lvm2 a--  <20.00g     0 
+  /dev/sdc1  rl    lvm2 a--  <40.00g     0
+```
+### 6. Check Volume Group
+> Volume group should be extended
+```console
+vgdisplay
+```
+```shell
+  --- Volume group ---
+  VG Name               kbuor
+  System ID             
+  Format                lvm2
+  Metadata Areas        1
+  Metadata Sequence No  2
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                1
+  Open LV               1
+  Max PV                0
+  Cur PV                1
+  Act PV                1
+  VG Size               <20.00 GiB
+  PE Size               4.00 MiB
+  Total PE              5119
+  Alloc PE / Size       5119 / <20.00 GiB
+  Free  PE / Size       0 / 0   
+  VG UUID               ZgaqFh-ow1j-n2gj-H5di-GtcX-WaXI-QtPwxa
+   
+  --- Volume group ---
+  VG Name               rl
+  System ID             
+  Format                lvm2
+  Metadata Areas        2
+  Metadata Sequence No  6
+  VG Access             read/write
+  VG Status             resizable
+  MAX LV                0
+  Cur LV                2
+  Open LV               2
+  Max PV                0
+  Cur PV                2
+  Act PV                2
+  VG Size               <118.41 GiB
+  PE Size               4.00 MiB
+  Total PE              30312
+  Alloc PE / Size       22632 / <88.41 GiB
+  Free  PE / Size       7680 / 30.00 GiB
+  VG UUID               d9GCGF-80hN-iXOd-MQY1-cUcP-j171-pFZd3a
+```
+```console
+vgs
+```
+```shell
+  VG    #PV #LV #SN Attr   VSize    VFree 
+  kbuor   1   1   0 wz--n-  <20.00g     0 
+  rl      2   2   0 wz--n- <118.41g 30.00g
+```
+### 7. Extend Logical Volume
+```console
+lvdisplay
+```
+```shell
+  --- Logical volume ---
+  LV Path                /dev/kbuor/lv_kbuor
+  LV Name                lv_kbuor
+  VG Name                kbuor
+  LV UUID                B6VBRi-4rYv-kVOT-p3V2-XevD-JurB-rcpyOi
+  LV Write Access        read/write
+  LV Creation host, time web.kbuor.tech, 2024-01-06 22:02:17 +0700
+  LV Status              available
+  # open                 1
+  LV Size                <20.00 GiB
+  Current LE             5119
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:2
+   
+  --- Logical volume ---
+  LV Path                /dev/rl/swap
+  LV Name                swap
+  VG Name                rl
+  LV UUID                7Guo8Y-gHIL-1JyK-Wz7f-c2hP-Q5yi-ZbrLzd
+  LV Write Access        read/write
+  LV Creation host, time web.kbuor.tech, 2024-01-06 13:44:20 +0700
+  LV Status              available
+  # open                 2
+  LV Size                <3.94 GiB
+  Current LE             1008
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:1
+   
+  --- Logical volume ---
+  LV Path                /dev/rl/root
+  LV Name                root
+  VG Name                rl
+  LV UUID                sxA2oL-fYzf-W17T-4E6M-Oxx4-fSX1-Qq6GL0
+  LV Write Access        read/write
+  LV Creation host, time web.kbuor.tech, 2024-01-06 13:44:20 +0700
+  LV Status              available
+  # open                 1
+  LV Size                <84.47 GiB
+  Current LE             21624
+  Segments               2
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:0
+```
+```console
+lvs
+```
+```shell
+  LV       VG    Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_kbuor kbuor -wi-ao---- <20.00g                                                    
+  root     rl    -wi-ao---- <84.47g                                                    
+  swap     rl    -wi-ao----  <3.94g
+```
+```console
+lvextend /dev/rl/root -l +100%FREE
+```
+```shell
+  Size of logical volume rl/root changed from <84.47 GiB (21624 extents) to <114.47 GiB (29304 extents).
+  Logical volume rl/root successfully resized.
+```
+```console
+lvdisplay
+```
+```shell
+  --- Logical volume ---
+  LV Path                /dev/kbuor/lv_kbuor
+  LV Name                lv_kbuor
+  VG Name                kbuor
+  LV UUID                B6VBRi-4rYv-kVOT-p3V2-XevD-JurB-rcpyOi
+  LV Write Access        read/write
+  LV Creation host, time web.kbuor.tech, 2024-01-06 22:02:17 +0700
+  LV Status              available
+  # open                 1
+  LV Size                <20.00 GiB
+  Current LE             5119
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:2
+   
+  --- Logical volume ---
+  LV Path                /dev/rl/swap
+  LV Name                swap
+  VG Name                rl
+  LV UUID                7Guo8Y-gHIL-1JyK-Wz7f-c2hP-Q5yi-ZbrLzd
+  LV Write Access        read/write
+  LV Creation host, time web.kbuor.tech, 2024-01-06 13:44:20 +0700
+  LV Status              available
+  # open                 2
+  LV Size                <3.94 GiB
+  Current LE             1008
+  Segments               1
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:1
+   
+  --- Logical volume ---
+  LV Path                /dev/rl/root
+  LV Name                root
+  VG Name                rl
+  LV UUID                sxA2oL-fYzf-W17T-4E6M-Oxx4-fSX1-Qq6GL0
+  LV Write Access        read/write
+  LV Creation host, time web.kbuor.tech, 2024-01-06 13:44:20 +0700
+  LV Status              available
+  # open                 1
+  LV Size                <114.47 GiB
+  Current LE             29304
+  Segments               3
+  Allocation             inherit
+  Read ahead sectors     auto
+  - currently set to     256
+  Block device           253:0
+```
+```console
+lvs
+```
+```shell
+  LV       VG    Attr       LSize    Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+  lv_kbuor kbuor -wi-ao----  <20.00g                                                    
+  root     rl    -wi-ao---- <114.47g                                                    
+  swap     rl    -wi-ao----   <3.94g
+```
+### 8. Extend Filesystem
+```console
+xfs_growfs /dev/rl/root
+```
+```shell
+meta-data=/dev/mapper/rl-root    isize=512    agcount=8, agsize=2914560 blks
+         =                       sectsz=512   attr=2, projid32bit=1
+         =                       crc=1        finobt=1, sparse=1, rmapbt=0
+         =                       reflink=1    bigtime=1 inobtcount=1 nrext64=0
+data     =                       bsize=4096   blocks=22142976, imaxpct=25
+         =                       sunit=0      swidth=0 blks
+naming   =version 2              bsize=4096   ascii-ci=0, ftype=1
+log      =internal log           bsize=4096   blocks=16384, version=2
+         =                       sectsz=512   sunit=0 blks, lazy-count=1
+realtime =none                   extsz=4096   blocks=0, rtextents=0
+data blocks changed from 22142976 to 30007296
+```
+> If filesystem is ext4, use: `resize2fs /dev/rl/root`
+
+```console
+df -hT
+```
+```shell
+Filesystem                 Type      Size  Used Avail Use% Mounted on
+devtmpfs                   devtmpfs  4.0M     0  4.0M   0% /dev
+tmpfs                      tmpfs     1.8G     0  1.8G   0% /dev/shm
+tmpfs                      tmpfs     730M  8.6M  721M   2% /run
+/dev/mapper/rl-root        xfs       115G  2.8G  112G   3% /
+/dev/sda2                  xfs       960M  300M  661M  32% /boot
+/dev/sda1                  vfat      599M  7.0M  592M   2% /boot/efi
+/dev/mapper/kbuor-lv_kbuor ext4       20G   24K   19G   1% /kbuor
+tmpfs                      tmpfs     365M     0  365M   0% /run/user/0
+```
